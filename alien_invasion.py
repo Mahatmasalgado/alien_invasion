@@ -2,6 +2,7 @@ import sys, pygame
 from ship import Ship
 from settings import Settings
 from bullet import Bullet
+from alien import Alien
 
 class AlienInvasion:
     """ clase general para gestionar los recursos y el comportamiento del juego """
@@ -10,13 +11,42 @@ class AlienInvasion:
         """ Inicializa el juego y crea recursos"""
         pygame.init()
         self.settings = Settings()
-        
-        self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
-        self.settings.screen_width = self.screen.get_rect().width
-        self.settings.screen_height = self.screen.get_rect().height
+        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption("Alien Invasion")
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
+        self.aliens = pygame.sprite.Group()
+    
+        self._create_fleet()
+        
+    def _create_alien(self, alien_number, row_number):
+        #crea un alien y lo coloca en la fila
+            alien = Alien(self)
+            alien_width, alien_height = alien.rect.size
+            alien.x = alien_width + (2 * alien_width * alien_number)
+            alien.rect.x = alien.x
+            alien.y = alien_height + (2 * alien_height * row_number)
+            alien.rect.y = alien.y
+            self.aliens.add(alien)
+        
+    def _create_fleet(self):
+        """ crea la flota de aliens """
+        #hace un alien y halla el número de aliens en una fila , el espacio entre aliens es igual a la anchura de un alien 
+        alien = Alien(self)
+        
+        alien_width, alien_height = alien.rect.size
+        available_space_x = self.settings.screen_width - (2 * alien_width)
+        number_aliens_x = available_space_x // (2 * alien_width)
+        
+        #determina el número de filas de aliens que caben en la pantalla
+        ship_height = self.ship.rect.height
+        available_space_y = (self.settings.screen_height - (3 * alien_height) - ship_height)
+        number_rows = available_space_y // (2 * alien_height)
+        
+        #creamos la flota completa
+        for row_number in range(number_rows):
+            for alien_number in range(number_aliens_x):
+                self._create_alien(alien_number, row_number)
     
     def _check_keydown_events(self, event):
         """ respuesta a pulsación del teclado """
@@ -63,7 +93,7 @@ class AlienInvasion:
         self.ship.blitme()
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
-        
+        self.aliens.draw(self.screen)
         #hace visible la última pantalla dibujada
         pygame.display.flip()
     
