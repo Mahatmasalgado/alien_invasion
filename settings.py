@@ -18,7 +18,10 @@ class Settings:
         self.bullet_allowed = 5
         
         #configuración de los aliens
-        self.alien_speed = 1.5
-        self.fleet_drop_speed = 5
+        self.alien_speed = 1.0
+        self.fleet_drop_speed = 7
         #fleet_direction de 1 representa derecha; -1 representa izquierda
         self.fleet_direction = 1
+        
+        #configuración de estadísticas
+        self.ship_limit = 3

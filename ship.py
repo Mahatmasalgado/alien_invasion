@@ -22,6 +22,11 @@ class Ship:
         self.moving_right = False
         self.moving_left = False
         
+    def center_ship(self):
+        """ centra la nave en la pantalla """
+        self.rect.midbottom = self.screen.rect.midbottom
+        self.x = float(self.rect.x)
+        
     def update(self):
         """ actualiza la posicion de la nave en función del movimiento y de los bordes """
         if self.moving_right and self.rect.right < self.screen_rect.right:
